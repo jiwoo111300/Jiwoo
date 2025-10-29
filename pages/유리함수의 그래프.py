@@ -57,3 +57,63 @@ st.latex(f"y = \\frac{{ {k_value:.1f} }}{{x}} \quad (k = {k_value:.1f})")
 
 # 그래프 그리기
 fig, ax = plt.subplots(figsize=(8, 8))
+x_range = np.linspace(-10, 10, 400)
+# 점근선 주변의 값은 제외 (x=0)
+x_plot_positive = x_range[x_range > 0.1]
+x_plot_negative = x_range[x_range < -0.1]
+
+# 그래프 그리기
+ax.plot(x_plot_positive, k_value / x_plot_positive, color='blue', label=r'$y = k/x$')
+ax.plot(x_plot_negative, k_value / x_plot_negative, color='blue')
+
+# 축 및 격자 설정
+ax.axhline(0, color='gray', linewidth=0.5, linestyle='--') # x축
+ax.axvline(0, color='gray', linewidth=0.5, linestyle='--') # y축
+ax.set_xlim(-8, 8)
+ax.set_ylim(-8, 8)
+ax.set_xticks(np.arange(-8, 9, 2))
+ax.set_yticks(np.arange(-8, 9, 2))
+ax.grid(True, linestyle=':', alpha=0.6)
+ax.set_aspect('equal', adjustable='box')
+ax.set_xlabel("x")
+ax.set_ylabel("y")
+ax.set_title(f"$y = {k_value:.1f} / x$ 그래프 개형")
+
+st.pyplot(fig)
+
+
+st.markdown("---")
+
+### 💡 그래프의 주요 특징
+
+#### 1. 지나는 사분면 (개형)
+if k_value > 0:
+    st.success(f"**k > 0 ({k_value:.1f} > 0)**: 그래프는 **제1사분면**과 **제3사분면**을 지납니다.")
+else:
+    st.error(f"**k < 0 ({k_value:.1f} < 0)**: 그래프는 **제2사분면**과 **제4사분면**을 지납니다.")
+
+#### 2. 점근선 (Asymptotes)
+st.markdown("""
+그래프가 한없이 가까워지지만 만나지 않는 직선을 **점근선**이라고 합니다.
+$y = \frac{k}{x}$ 그래프의 점근선은 다음과 같습니다.
+* **x축** ($\mathbf{y=0}$)
+* **y축** ($\mathbf{x=0}$)
+""")
+
+#### 3. 대칭성 (Symmetry)
+st.markdown("""
+$y = \frac{k}{x}$ 그래프는 다음 세 가지에 대해 대칭입니다.
+* **원점** $(0, 0)$에 대하여 **점대칭**
+* 두 직선 **$\mathbf{y=x}$** 및 **$\mathbf{y=-x}$**에 대하여 **선대칭**
+""")
+
+#### 4. $|k|$의 값과 그래프의 관계
+st.markdown(f"""
+현재 $|k|$의 값은 $\mathbf{{np.abs(k\_value):.1f}}$입니다.
+* $|k|$의 값이 **커질수록** (슬라이더를 양쪽 끝으로 움직일수록), 그래프의 두 곡선은 **원점에서 점점 멀어집니다**.
+* $|k|$의 값이 **작아질수록** (슬라이더를 0에 가까이 움직일수록), 그래프의 두 곡선은 **원점에 점점 가까워집니다**.
+""")
+
+st.markdown("---")
+st.subheader("마무리 학습")
+st.success(r"유리함수 $y=\frac{k}{x}$의 특징을 k값 변화를 통해 잘 이해했습니다! $\mathbf{k \neq 0}$이라는 조건과 **점근선** 및 **대칭성**을 기억하세요.")
