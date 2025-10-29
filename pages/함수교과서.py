@@ -2,14 +2,14 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 1. 페이지 제목 설정
+# 1. 페이지 제목 설정 및 설명
 st.title('이차함수의 그래프 기본형($y=ax^2$) 분석')
 st.markdown("계수 $a$ 값을 변경하며 그래프의 모양을 관찰하세요.")
 st.latex(r'y = ax^2')
 st.markdown('---')
 
-# 2. 계수 조정 슬라이더 (메인 화면으로 이동)
-# a 값 선택 슬라이더를 메인 화면에 배치합니다.
+# 2. 계수 조정 슬라이더 (메인 화면)
+# 사용자에게 a 값 선택 권한 제공
 a = st.slider('계수 $a$ 값 선택:', min_value=-5.0, max_value=5.0, value=1.0, step=0.1, help="a가 0일 때 이차함수가 아닙니다.")
 
 # 3. a가 0일 때의 예외 처리 및 경고 메시지
@@ -20,7 +20,7 @@ if abs(a) < 0.05:
 
 # 4. 그래프 데이터 생성
 x = np.linspace(-5, 5, 400) # x축 범위 
-y = a * x**2 # 이차함수 y = ax^2 계산
+y = a * x**2 # 이차함수 y = ax**2 계산
 
 # 5. Matplotlib을 사용하여 그래프 생성
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -29,7 +29,7 @@ fig, ax = plt.subplots(figsize=(8, 6))
 ax.plot(x, y, label=f'y = {a:.1f}x^2', color='blue', linewidth=2)
 
 # 축 및 제목 설정
-ax.set_title(f'이차함수 그래프: $y = {a:.1f}x^2$')
+ax.set_title(f'이차함수 그래프: y = {a:.1f}x^2')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.grid(True, linestyle=':', alpha=0.7)
@@ -49,7 +49,7 @@ st.pyplot(fig)
 
 st.markdown('---')
 
-## 🧐 그래프 관찰 및 학습 가이드
+## 🧐 그래프 관찰 및 학습 가이드 (한국어)
 
 st.subheader('관찰 결과 및 학습 가이드')
 
