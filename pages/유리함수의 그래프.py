@@ -46,29 +46,34 @@ k_value = st.sidebar.slider(
 )
 
 # k가 0인 경우 처리 (유리함수가 아니므로)
-if k_value == 0:
+if abs(k_value) < 0.1: # 0에 가까운 값도 0으로 간주
     st.warning("k는 0이 아니어야 합니다. k=0이면 $y=0$이 되어 유리함수(분수함수)가 아닌 상수함수가 됩니다.")
-    k_value = 0.001 # 그래프를 그리기 위해 0에 가까운 값으로 대체
-    st.sidebar.markdown(f"**$\mathbf{k}$ 값**: $\mathbf{0.0}$ (그래프는 $\mathbf{k=0.001}$로 표시)")
+    
+    # 그래프를 그리기 위해 0에 가까운 값으로 대체 (매우 작은 양수)
+    k_plot = 0.001 
+    st.sidebar.markdown(f"**$\mathbf{{k}}$ 값**: $\mathbf{{k\_value:.1f}}$ (그래프는 $\mathbf{{k={k_plot}}}$로 표시)")
 else:
-    st.sidebar.markdown(f"**$\mathbf{k}$ 값**: $\mathbf{{k\_value}}$")
+    k_plot = k_value
+    st.sidebar.markdown(f"**$\mathbf{{k}}$ 값**: $\mathbf{{k\_value:.1f}}$")
 
-st.latex(f"y = \\frac{{ {k_value:.1f} }}{{x}} \quad (k = {k_value:.1f})")
+# 그래프 수식 표시
+st.latex(f"y = \\frac{{ {k_plot:.1f} }}{{x}} \quad (k = {k_value:.1f})")
 
 # 그래프 그리기
 fig, ax = plt.subplots(figsize=(8, 8))
-x_range = np.linspace(-10, 10, 400)
-# 점근선 주변의 값은 제외 (x=0)
-x_plot_positive = x_range[x_range > 0.1]
-x_plot_negative = x_range[x_range < -0.1]
+# x_range를 점근선 근처를 피해서 정의
+x1 = np.linspace(-8, -0.1, 100) # 음의 무한대에서 0 근처까지
+x2 = np.linspace(0.1, 8, 100)   # 0 근처에서 양의 무한대까지
 
 # 그래프 그리기
-ax.plot(x_plot_positive, k_value / x_plot_positive, color='blue', label=r'$y = k/x$')
-ax.plot(x_plot_negative, k_value / x_plot_negative, color='blue')
+ax.plot(x1, k_plot / x1, color='blue', label=r'$y = k/x$')
+ax.plot(x2, k_plot / x2, color='blue')
+
+# 점근선 표시 (x=0, y=0)
+ax.axhline(0, color='gray', linewidth=1, linestyle='--', label="점근선") # x축 (y=0)
+ax.axvline(0, color='gray', linewidth=1, linestyle='--') # y축 (x=0)
 
 # 축 및 격자 설정
-ax.axhline(0, color='gray', linewidth=0.5, linestyle='--') # x축
-ax.axvline(0, color='gray', linewidth=0.5, linestyle='--') # y축
 ax.set_xlim(-8, 8)
 ax.set_ylim(-8, 8)
 ax.set_xticks(np.arange(-8, 9, 2))
@@ -77,20 +82,22 @@ ax.grid(True, linestyle=':', alpha=0.6)
 ax.set_aspect('equal', adjustable='box')
 ax.set_xlabel("x")
 ax.set_ylabel("y")
-ax.set_title(f"$y = {k_value:.1f} / x$ 그래프 개형")
+ax.set_title(f"$y = {k_plot:.1f} / x$ 그래프 개형")
+
 
 st.pyplot(fig)
-
 
 st.markdown("---")
 
 ### 💡 그래프의 주요 특징
 
 #### 1. 지나는 사분면 (개형)
-if k_value > 0:
+if k_value > 0.1:
     st.success(f"**k > 0 ({k_value:.1f} > 0)**: 그래프는 **제1사분면**과 **제3사분면**을 지납니다.")
-else:
+elif k_value < -0.1:
     st.error(f"**k < 0 ({k_value:.1f} < 0)**: 그래프는 **제2사분면**과 **제4사분면**을 지납니다.")
+else:
+    st.warning("k가 0에 매우 가깝습니다. 실제 그래프는 x축(y=0)과 y축(x=0)에 한없이 가까워집니다.")
 
 #### 2. 점근선 (Asymptotes)
 st.markdown("""
@@ -108,8 +115,9 @@ $y = \frac{k}{x}$ 그래프는 다음 세 가지에 대해 대칭입니다.
 """)
 
 #### 4. $|k|$의 값과 그래프의 관계
+abs_k = np.abs(k_value)
 st.markdown(f"""
-현재 $|k|$의 값은 $\mathbf{{np.abs(k\_value):.1f}}$입니다.
+현재 $|k|$의 값은 $\mathbf{{abs_k:.1f}}$입니다.
 * $|k|$의 값이 **커질수록** (슬라이더를 양쪽 끝으로 움직일수록), 그래프의 두 곡선은 **원점에서 점점 멀어집니다**.
 * $|k|$의 값이 **작아질수록** (슬라이더를 0에 가까이 움직일수록), 그래프의 두 곡선은 **원점에 점점 가까워집니다**.
 """)
