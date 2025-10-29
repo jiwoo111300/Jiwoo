@@ -2,72 +2,74 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Set page title
-st.title('Quadratic Function Graph: y=ax^2 Analysis')
+# 1. 페이지 제목 설정
+st.title('이차함수의 그래프 기본형($y=ax^2$) 분석하기')
 
 st.markdown("""
-Use this app to explore how the coefficient 'a' affects the parabola $y=ax^2$.
+이 앱을 통해 이차함수 $y=ax^2$에서 **계수 $a$의 값 변화**가 그래프의 모양에 미치는 영향을 직접 확인해 보세요.
 """)
 
-# Display the function formula
+# 함수 수식 표시
 st.latex(r'y = ax^2')
 
 st.markdown('---')
 
-# 2. User input (coefficient a) widget setup
-# Place slider in the sidebar
+# 2. 사용자 입력(a 값) 위젯 설정
+# 슬라이더를 사이드바에 배치하여 메인 화면을 깔끔하게 유지합니다.
 with st.sidebar:
-    st.header('Set Coefficient "a"')
-    # Set the range for 'a', avoiding a = 0
-    a = st.slider('Select coefficient a:', min_value=-5.0, max_value=5.0, value=1.0, step=0.1, help="a cannot be zero for a quadratic function.")
+    st.header('계수 $a$ 값 설정')
+    # a는 0이 아니어야 하므로, min/max 범위를 설정합니다.
+    a = st.slider('계수 $a$ 선택:', min_value=-5.0, max_value=5.0, value=1.0, step=0.1, help="a가 0일 때 이차함수가 아닙니다.")
 
-# 3. Handle a close to zero
-if abs(a) < 0.05:
-    st.warning('Warning: "a" is close to 0. The function is nearly y = 0 (the x-axis).')
-    # Prevent a literal 0 value just in case
+# 3. a가 0일 때의 예외 처리 및 경고 메시지
+if abs(a) < 0.05: 
+    st.warning('⚠️ 경고: $a$ 값이 0에 매우 가깝습니다. 이는 이차함수가 아닌 $y \\approx 0$ (x축)에 가까워집니다. 해석에 주의하세요.')
+    # 그래프를 그릴 수 있도록 0이 되지 않게 아주 작은 값으로 조정
     if a == 0:
         a = 0.001 
 
-# 4. Generate graph data
-x = np.linspace(-5, 5, 400) 
-y = a * x**2 
+# 4. 그래프 데이터 생성
+x = np.linspace(-5, 5, 400) # x축 범위 (-5에서 5까지 400개 지점)
+y = a * x**2 # 이차함수 y = ax^2 계산
 
-# 5. Create the Matplotlib plot
+# 5. Matplotlib을 사용하여 그래프 생성
 fig, ax = plt.subplots(figsize=(8, 6))
 
-# Plot the graph
+# 그래프 그리기
 ax.plot(x, y, label=f'y = {a:.1f}x^2', color='blue', linewidth=2)
 
-# Set axes, title, and grid
-ax.set_title(f'Graph of: y = {a:.1f}x^2')
+# 축 및 제목 설정
+ax.set_title(f'이차함수 그래프: $y = {a:.1f}x^2$')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.grid(True, linestyle=':', alpha=0.7)
 
-# Draw x and y axes
+# x축(y=0)과 y축(x=0) 표시 (좌표축)
 ax.axhline(0, color='gray', linewidth=1)
 ax.axvline(0, color='gray', linewidth=1)
 
-# Fix axis limits for consistent viewing
+# 축 범위 고정 (일관된 시각적 비교를 위해)
 ax.set_xlim(-5, 5)
 ax.set_ylim(-15, 15)
 
 ax.legend()
 
-# 6. Display the plot in Streamlit
+# 6. Streamlit에 그래프 표시
 st.pyplot(fig)
 
 st.markdown('---')
 
-# Observations Guide (ASCII only for safety)
-st.subheader('Graph Observations and Inferences')
+## 🧐 그래프 관찰 및 학습 가이드
 
-st.markdown('### 1. Concavity (Sign of a)')
-st.markdown('The **sign of a** determines the concavity (which way the parabola opens).')
-st.markdown('* **If a > 0 (Positive):** The parabola is **concave up** (opens upwards).')
-st.markdown('* **If a < 0 (Negative):** The parabola is **concave down** (opens downwards).')
+### 1. 그래프의 볼록성 (a의 부호)
+계수 $a$ 값의 부호에 따라 그래프의 **볼록성**이 결정됩니다. 사용자는 슬라이더를 통해 $a$의 부호를 바꿔가며 이 사실을 귀납적으로 추론할 수 있습니다.
 
-st.markdown('### 2. Width (Absolute Value of a)')
-st.markdown('The **absolute value of a** ($|a|$) determines the **width** of the parabola.')
-st.markdown('* As $|a|$ **increases** (e.g., $|2| > |1|$), the graph becomes **narrower** (closer to the y-axis).')
-st.markdown('* As $|a|$ **decreases** (e.g., $|0.5| < |1|$), the graph becomes **wider** (closer to the x-axis).')
+
+* **$a > 0$ (양수):** 그래프는 **아래로 볼록**합니다. (최솟값을 가집니다)
+* **$a < 0$ (음수):** 그래프는 **위로 볼록**합니다. (최댓값을 가집니다)
+
+### 2. 그래프의 폭 (a의 절댓값 $|a|$)
+계수 $a$ 값의 **절댓값 $|a|$**의 크기에 따라 그래프의 **폭**이 달라집니다.
+
+* $|a|$가 **클수록** (예: $|2| > |1|$), 그래프는 y축에 가까워져 **폭이 좁아집니다**.
+* $|a|$가 **작을수록** (예: $|0.5| < |1|$), 그래프는 x축에 가까워져 **폭이 넓어집니다**.
